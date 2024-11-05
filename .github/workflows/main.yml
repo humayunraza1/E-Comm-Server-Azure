@@ -1,47 +1,75 @@
-name: CICD
+name: production
 
 on:
   push:
     branches:
       - server-ec2
 
+
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  ci:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [20]
+    env:
+      NODE_ENV: "development"
+
+
     steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
+      - name: Checkout 🛎
+        uses: actions/checkout@master
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v2.1.2
         with:
-          node-version: 20
+          node-version: ${{ matrix.node }}
 
-      - name: Install Dependencies
+      - name: Cache node_modules 📦
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Installing NPM
         run: npm install
 
-      - name: Generate Deployment Package
-        run: zip -r nodejs-app-build.zip .
+      - name: Linting check
+        run: npm run lint
 
-      - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Building application
+        run: npm run build
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip * .[^.]* -x "**node_modules**"
+
+      - name: Get timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
         with:
-          args: --acl public-read
-        env:
-          AWS_S3_BUCKET: elasticbeanstalk-ap-southeast-1-651706742954  # Upload to the Azzyserver folder in the bucket
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'ap-southeast-1'
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
 
-      - name: Deploy to EB
+      - name: Beanstalk Deploy for app
         uses: einaregilsson/beanstalk-deploy@v22
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: 'Azzyserver'
-          environment_name: 'AzzysServer-env'
-          version_label: ${{ github.sha }} # Use the commit SHA for a unique version
+          aws_access_key: ${{secrets.ACCESS_KEY_ID}}
+          aws_secret_key: ${{secrets.SECRET_ACCESS_KEY}}
+          application_name: AzzysServer
+          environment_name: AzzysServer-env
           region: ap-southeast-1
-          use_existing_version_if_available: true
-          deployment_package: 'nodejs-app-build.zip'  # Correct input for deployment package
-          existing_bucket_name: 'elasticbeanstalk-ap-southeast-1-651706742954'  # Reference your S3 bucket
+          version_label: "e-learn-${{ steps.format-time.outputs.replaced }}"
+          deployment_package: deploy.zip
+
+      - name: Deployed!
+        run: echo App deployed to ELB
