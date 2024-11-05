@@ -28,7 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/users',  userRoutes);
 app.use('/admin',  adminRoutes);
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.get('/',(req,res)=>{
   res.send('Welcome to server')
 })
