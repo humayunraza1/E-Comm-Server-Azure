@@ -45,5 +45,5 @@ jobs:
           environment_name: 'Azzyserver-env'
           version_label: ${{ github.sha }} # Use the commit SHA for a unique version
           region: ap-southeast-1
-          deployment_package: 'nodejs-app-build.zip'  # Correct input for deployment package
+          deployment_package: 'Azzyserver/nodejs-app-build.zip'  # Correct input for deployment package
           existing_bucket_name: 'elasticbeanstalk-ap-southeast-1-651706742954'  # Reference your S3 bucket
