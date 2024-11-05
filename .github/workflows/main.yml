@@ -7,31 +7,25 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: [ ubuntu-latest ]
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Install Dependencies
         run: npm install
-
-      - name: Generate Deployment Package
+      - name: Genrate Deployment Package
         run: zip -r nodejs-app-build.zip .
-
-      - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v21
         with:
-          args: --acl public-read
-        env:
-          AWS_S3_BUCKET: elasticbeanstalk-ap-southeast-1-651706742954  # Upload to the Azzyserver folder in the bucket
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'ap-southeast-1'
-
-      - name: Running Server
-        run: node app.js
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: 'AzzysServer'
+          environment_name: 'AzzysServer-env'
+          version_label: ${{ github.sha }}
+          region: ap-southeast-1
+          deployment_package: nodejs-app-build.zip
