@@ -28,3 +28,4 @@ jobs:
           environment_name: 'Azzyserver-env'
           version_label: ${{ github.sha }} # Use the commit SHA for a unique version
           region: ap-southeast-1
+          deploy: nodejs-app-build.zip
