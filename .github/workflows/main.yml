@@ -21,9 +21,7 @@ jobs:
         run: npm install
 
       - name: Generate Deployment Package
-        run: |
-          mkdir -p deploy-package
-          zip -r deploy-package/nodejs-app-build.zip .
+        run: zip -r nodejs-app-build.zip .
 
       - name: Upload to S3
         uses: jakejarvis/s3-sync-action@v0.5.1
