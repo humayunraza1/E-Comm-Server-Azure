@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
-const authRoutes = require('../server/api/auth/auth.routes');
-const userRoutes = require('../server/user/user.routes')
-const adminRoutes = require('../server/admin/admin.routes')
+const authRoutes = require('./api/auth/auth.routes'); // Corrected path
+const userRoutes = require('./user/user.routes'); // Correct path
+const adminRoutes = require('./admin/admin.routes'); // Correct path
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 // Use CORS with specific origin
