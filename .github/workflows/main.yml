@@ -30,11 +30,11 @@ jobs:
         with:
           args: --acl public-read
         env:
-          AWS_S3_BUCKET: elasticbeanstalk-ap-southeast-1-651706742954  # Your S3 bucket name
+          AWS_S3_BUCKET: elasticbeanstalk-ap-southeast-1-651706742954/Azzyserver  # Upload to the Azzyserver folder in the bucket
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'ap-southeast-1'
-          SOURCE_DIR: 'deploy-package/'  # Upload the directory containing the .zip file
+          SOURCE_DIR: 'deploy-package/'
 
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v22
@@ -45,4 +45,5 @@ jobs:
           environment_name: 'Azzyserver-env'
           version_label: ${{ github.sha }} # Use the commit SHA for a unique version
           region: ap-southeast-1
-          artifact: 'nodejs-app-build.zip' # Specify the deployment package
+          deployment_package: 'nodejs-app-build.zip'  # Correct input for deployment package
+          existing_bucket_name: 'elasticbeanstalk-ap-southeast-1-651706742954'  # Reference your S3 bucket
