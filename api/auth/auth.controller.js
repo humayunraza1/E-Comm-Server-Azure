@@ -27,7 +27,7 @@ user.refreshToken = refreshToken;
 await user.save();
 res.cookie('refreshToken', refreshToken, {
   secure: true, // Ensures the cookie is sent over HTTPS only
-  httpOnly: false, // Prevents client-side JS from accessing the cookie
+  httpOnly: true, // Prevents client-side JS from accessing the cookie
   sameSite: 'none', // Allows cross-site cookie sharing
   maxAge: 1000 * 60 * 60 * 24 * 3 // expires in 3 days
 });
@@ -169,7 +169,7 @@ const resetPassword = async (req, res) => {
     
     res.cookie('user', user.email, {
       secure: true, // Ensures the cookie is sent over HTTPS only
-      httpOnly: false, // Prevents client-side JS from accessing the cookie
+      httpOnly: true, // Prevents client-side JS from accessing the cookie
       sameSite: 'none', // Allows cross-site cookie sharing
       maxAge: 30000 // expires in 1 hour
     });
