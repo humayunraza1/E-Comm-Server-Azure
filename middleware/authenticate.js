@@ -6,12 +6,12 @@ require('dotenv').config();
 function verifyRoles(role){
   return (req,res,next)=>{
     console.log("verify roles: ",res);
-      if(!res?.role) return res.sendStatus(401);
+      if(!res?.user) return res.sendStatus(401);
 
       const allowedrole = role
       console.log(allowedrole);
-      console.log(req.role);
-      const result = req.role == allowedrole
+      console.log(res.user.role);
+      const result = res.user.role == allowedrole
       if(!result) return res.sendStatus(401);
       next();
     }
