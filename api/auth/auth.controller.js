@@ -36,6 +36,7 @@ return res.status(200).send({token:token, user:userInfo, msg:"Logged In Successf
 
 const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies;
+  console.log("Cookies: " + cookies);
     if (!cookies?.refreshToken) {
       return res.status(401).send("No refresh token cookie found")
     }
