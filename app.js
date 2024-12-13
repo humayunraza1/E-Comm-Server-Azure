@@ -12,7 +12,7 @@ const multerS3 = require('multer-s3');
 // Use CORS with specific origin
 app.use(express.json());
 app.use(cookieParser());
-const allowedOrigins = 'http://localhost:5000';
+const allowedOrigins = 'https://www.azzyshardware.store';
 const corsOptions = {
   origin: allowedOrigins, // Replace with the domain you want to allow
   credentials: true, // Allow credentials to be included in the request
