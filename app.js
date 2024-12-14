@@ -41,7 +41,7 @@ app.use('/admin',  adminRoutes);
 
 const port = process.env.PORT || 3000;
 app.get('/',(req,res)=>{
-  res.send('Welcome to server')
+  res.send('Welcome Sir Hafeez.')
 })
 
 app.listen(port, () => {
